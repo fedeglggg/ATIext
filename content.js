@@ -7,20 +7,19 @@ let interval_id = window.setInterval(function() {
 		panel.addEventListener("click", add_tecnom_button);
 		add_modal();
     window.clearInterval(interval_id);
-    console.log('carga completada');
+    /* console.log('carga completada'); */
 	} else {
-		console.log('cargando cada 500ms');
+		/* console.log('cargando cada 500ms'); */
 	}
 }, 500); // 500 milisegundos para el intervalo (0.5 segundo)
 
 
 function add_tecnom_button() {
 	if (document.getElementById('tecnom_button')) {
-		console.log('ya existe un botton');
+		/* console.log('ya existe un botton'); */
 	} else {
-		console.log('agregando boton...');
+		/* console.log('agregando boton...'); */
 		let targetElement = document.getElementsByClassName("_23P3O")[0];
-		console.log(targetElement);
 		let button = document.createElement("button");
 		button.innerHTML = "Enviar a Tecnom";
 		button.setAttribute('id','tecnom_button');
@@ -78,44 +77,42 @@ function add_modal() {
   document.body.append(div);
   let div2 = document.getElementById('modal-wrapper');
   div2.insertAdjacentHTML('afterend', add_html);
-  console.log('modal agregado');
 }
 
 function set_nombre_modal(){
   let name_div = document.getElementsByClassName("_21nHd")[0];
   let name_span = name_div.childNodes[0];
-  console.log(name_span.innerHTML);
   document.getElementById("nombre-modal").value = name_span.innerHTML;
-  console.log('nombre asignado');
 }
-
 function set_numero_modal(){
-  /* Img src tiene el numero y despues aplico regex */
-  let user_img_src = document.getElementsByTagName("header")[1].getElementsByTagName('img')[0].src;
-  let re = /u=[0-9]*/
-  /* let re = /u=(.*)%4/;  */ // REGEX alternativo
-  let result = re.exec(user_img_src);
-  console.log("regex output");
-  console.log(result);
-  let numero_whatsapp = result[0].substring(2);
-  // numero_whatsapp = "+" + numero_whatsapp.substring(0, 2) + " " + numero_whatsapp.substring(2, 3) + " " + numero_whatsapp.substring(3, numero_whatsapp.length);
-  document.getElementById("whatsapp-modal").value = numero_whatsapp;
-  console.log('numero asignado');
+  /* Interval para evitar cargar el numero sin tener los div cargados */
+  let interval_id = window.setInterval(function() {
+    if (document.getElementsByClassName("message-in")){
+      /* Los mensajes tienen el numero en el atributo data-id */
+      let user_img_src = document.getElementsByClassName("message-in")[0].getAttribute('data-id');
+      window.clearInterval(interval_id);
+      let re = /\d[0-9]{9,14}/
+      let result = re.exec(user_img_src);
+      let numero_whatsapp = result[0].substring(2);
+      document.getElementById("whatsapp-modal").value = numero_whatsapp;
+    }
+  }, 500); 
 }
 
 function set_descripcion_modal(){
   /* El problema es que no siempre carga lo suficientemente rapido los mensajes clickeando en distintos usuarios -> wait */
   let interval_id = window.setInterval(function() {
     let lasts_msgs_in = document.getElementsByClassName("message-in");
-    let last_msg_in = lasts_msgs_in[lasts_msgs_in.length-1]
-    if (last_msg_in) {
-      console.log('ultimo mensaje recivido encontrado');
-      console.log(last_msg_in);
-      window.clearInterval(interval_id);
-      document.getElementById("descripcion-modal").value = last_msg_in.getElementsByClassName("copyable-text")[0].textContent;
-      console.log('descripcion asignada');
-    } else {
-      console.log("no se encontro el ultimo mensaje recivido todavia");
+    window.clearInterval(interval_id);
+    if (lasts_msgs_in) {
+      let descripcion = "";
+      for (const last_msg of lasts_msgs_in) {
+        const new_description = last_msg.getElementsByClassName("copyable-text");
+        if (new_description.length > 0){
+          descripcion = descripcion === "" ? new_description[0].textContent : descripcion + "\n" + new_description[0].textContent
+        }
+      }
+      document.getElementById("descripcion-modal").value = descripcion;
     }
   }, 500); 
 }
