@@ -44,13 +44,14 @@ function add_modal() {
 	let add_html = `
   <div class="modal fade" id="modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog">
+  <form id="modal_form" action="http://www.localhost:8000/api/" method="POST">
     <div class="modal-content">
       <div class="modal-header">
         <h2 class="modal-title" id="exampleModalLabel">Enviar lead de whatsapp a tecnom</h2>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form id="modal_form" action="/">
+        
           <div class="mb-3">
             <input type="text" class="form-control" id="nombre-modal" name="nombre" placeholder="Nombre">
           </div>
@@ -59,15 +60,17 @@ function add_modal() {
           </div>
           <div class="mb-3">
             <label for="message-text" class="col-form-label">Descripción</label>
-            <textarea class="form-control" id="descripcion-modal"></textarea>
+            <textarea class="form-control" id="descripcion-modal" name="text-data" style="height: 300px;"></textarea>
           </div>  
-        </form>
+       
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-        <button type="button" class="btn btn-primary">Enviar</button>
+        <button type="submit" class="btn btn-primary">Enviar</button>
       </div>
+     
     </div>
+    </form>
   </div>
   </div>
   `;
